@@ -15,7 +15,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
-  background-color: #0c151d;
   color: #eee;
 }
 
@@ -31,4 +30,9 @@ a {
 .row {
   width: 1600px;
   margin: auto;
+}
+
+.layout_admin {
+  background-color: #ededed;
+  position: relative;
 }

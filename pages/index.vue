@@ -22,7 +22,7 @@ export default {
 
   async asyncData({ params }) {
     // We can use async/await ES6 feature
-    const { data } = await axios.get('http://192.168.1.250:5000/api')
+    const { data } = await axios.get('http://vonvon.xyz:5000/api')
     return { movies: data }
   },
 

@@ -2,8 +2,15 @@
   <div class="container container-header">
     <div class="row row-header">
       <ul>
-        <li><nuxt-link to="/">Movie</nuxt-link></li>
-        <li><nuxt-link to="/music">Music</nuxt-link></li>
+        <li>
+          <nuxt-link to="/">Movie</nuxt-link>
+        </li>
+        <li>
+          <nuxt-link to="/music">Music</nuxt-link>
+        </li>
+        <li>
+          <nuxt-link to="/admin">Admin</nuxt-link>
+        </li>
       </ul>
     </div>
   </div>
