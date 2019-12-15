@@ -20,11 +20,41 @@
 //   modules: { Result }
 // })
 export const state = () => ({
-  counter: 100
+  movieSelected: '',
+  fileName: '',
+  movieName: '',
+  movieCode: '',
+  actresses: '',
+  imageCover: '',
+  studioId: 0,
+  labelId: 0,
+  seriesId: 0,
+  directorId: 0,
+  uncensored: 0,
+  releaseDate: '',
+  movieGenre: []
 })
 
 export const mutations = {
-  increment(state) {
-    state.counter++
+  changeMovieSelected(state, objMovie) {
+    state.movieSelected = state.fileName = objMovie.fileNameMovie
+    state.actresses = objMovie.parseMovie[1]
+    state.movieCode = objMovie.parseMovie[2]
+  },
+
+  changeInfoMovie(state, objMovie) {
+    for (const key in objMovie) {
+      state[key] = objMovie[key]
+    }
+  },
+
+  addLoadingImageCover(state, str) {
+    state.imageCover = str
+  },
+
+  updateInfoMovieR18(state, objMovie) {
+    state.movieName = objMovie.nameMovie
+    state.actresses = objMovie.actresses
+    // state.imageCover = objMovie.imageCover
   }
 }
