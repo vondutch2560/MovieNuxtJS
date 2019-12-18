@@ -3,7 +3,7 @@
     <h1>Admin movie</h1>
     <ul class="list-movie">
       <li
-        v-for="(movie, index) in listMovies"
+        v-for="(movie, index) in listMovie"
         :key="index"
         @click="getMovie"
         :id="`movie-${index}`"
@@ -32,18 +32,13 @@
       <div class="properties-movie">
         <div class="form-input">
           <label for="file-name">File name</label>
-          <input
-            id="file-name"
-            v-model="fileName"
-            type="text"
-            name="fileName"
-          />
+          <input id="file-name" :value="fileName" type="text" name="fileName" />
         </div>
         <div class="form-input">
           <label for="movie-name">Movie name</label>
           <input
             id="movie-name"
-            v-model="movieName"
+            :value="movieName"
             type="text"
             name="movieName"
           />
@@ -52,7 +47,7 @@
           <label for="movie-code">Movie Code</label>
           <input
             id="movie-code"
-            v-model="movieCode"
+            :value="movieCode"
             type="text"
             name="movieCode"
           />
@@ -77,10 +72,9 @@
           <label for="actresses">Actresses</label>
           <input
             id="actresses"
-            v-model="actresses"
+            :value="actresses"
             type="text"
             name="actresses"
-            value=""
           />
         </div>
         <div class="form-input">
@@ -110,69 +104,28 @@
 <script>
 import axios from 'axios'
 import multiselect from 'vue-multiselect'
-
-// import request from 'request'
-
-// import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   layout: 'admin',
 
   components: { multiselect },
+
   computed: {
-    // ...mapState({
-    //   movieSelected: (state) => state.adminMovie.movieSelected
-    // })
-    imageCover() {
-      return this.$store.state.adminMovie.imageCover
-    },
-
-    movieSelected() {
-      return this.$store.state.adminMovie.movieSelected
-    },
-
-    fileName: {
-      get() {
-        return this.$store.state.adminMovie.fileName
-      },
-      set(fileName) {
-        this.$store.commit('adminMovie/changeInfoMovie', { fileName })
-      }
-    },
-
-    movieName: {
-      get() {
-        return this.$store.state.adminMovie.movieName
-      },
-      set(movieName) {
-        this.$store.commit('adminMovie/changeInfoMovie', { movieName })
-      }
-    },
-
-    movieCode: {
-      get() {
-        return this.$store.state.adminMovie.movieCode
-      },
-      set(movieCode) {
-        this.$store.commit('adminMovie/changeInfoMovie', { movieCode })
-      }
-    },
-
-    actresses: {
-      get() {
-        return this.$store.state.adminMovie.actresses
-      },
-      set(actresses) {
-        this.$store.commit('adminMovie/changeInfoMovie', { actresses })
-      }
-    }
+    ...mapGetters('adminMovie', ['listMovie']),
+    ...mapState('adminMovie', [
+      'imageCover',
+      'movieSelected',
+      'fileName',
+      'movieName',
+      'movieCode',
+      'actresses'
+    ])
   },
 
-  async asyncData({ params }) {
-    const { data } = await axios.get('http://192.168.1.250:5000/api')
-
+  asyncData({ params }) {
+    // const { data } = await axios.get('http://192.168.1.250:5000/api')
     return {
-      listMovies: data,
       value: [],
       options: [
         { name: 'Vue.js', code: 'vu' },
@@ -183,60 +136,43 @@ export default {
     }
   },
 
+  async created() {
+    const { data } = await axios.get('http://192.168.1.250:5000/api')
+    this.$store.dispatch('adminMovie/createListMovieInit', data)
+  },
+
   head: {
     title: 'Admin page - NuxtJS'
   },
 
   methods: {
-    // async getMovie(event) {
-    //   const fileNameMovie = event.target.innerHTML.trim()
-    //   const regex = /(.*)\s-\s(.*)\.[^.]+$/g
-    //   const parseMovie = regex.exec(fileNameMovie)
-    //   this.$store.commit('adminMovie/changeMovieSelected', {
-    //     fileNameMovie,
-    //     parseMovie
-    //   })
-    //   this.$store.commit('adminMovie/addLoadingImageCover', 'loading')
-    //   const dataInfoMovie = await axios.get(
-    //     `http://vonvon.xyz:5000/getinfomovie/${parseMovie[2]}`
-    //   )
-    //   if (dataInfoMovie.data !== '')
-    //     this.$store.commit(
-    //       'adminMovie/addLoadingImageCover',
-    //       dataInfoMovie.data
-    //     )
-    //   else this.$store.commit('adminMovie/addLoadingImageCover', '404')
-    // },
     async getMovie(event) {
       const fileNameMovie = event.target.innerHTML.trim()
       const regex = /(.*)\s-\s(.*)\.[^.]+$/g
       const parseMovie = regex.exec(fileNameMovie)
-      this.$store.commit('adminMovie/changeMovieSelected', {
+
+      this.$store.dispatch('adminMovie/changeMovieSelected', {
         fileNameMovie,
         parseMovie
       })
-      this.$store.commit('adminMovie/addLoadingImageCover', 'loading')
+
       // const codeMovie = parseMovie[2].replace(/-/g, '')
       const codeMovie = parseMovie[2]
-      const dataInfoMovie = await axios.get(
+      const infoMovie = await axios.get(
         `http://192.168.1.250:5000/getinfomovie/${codeMovie}`
       )
 
-      if (dataInfoMovie.data.status === false) {
-        alert(dataInfoMovie.data.message)
-        this.$store.commit('adminMovie/addLoadingImageCover', '404')
-      } else {
-        this.$store.commit(
-          'adminMovie/addLoadingImageCover',
-          'https://res.cloudinary.com/teepublic/image/private/s--c746ptCM--/c_crop,x_10,y_10/c_fit,h_690/c_crop,g_north_west,h_734,w_1004,x_-199,y_-22/l_upload:v1466701074:production:blanks:ibu6swrzxdis4kiazjnn/fl_layer_apply,g_north_west,x_-330,y_-275/b_rgb:ffffff/c_limit,f_jpg,h_630,q_90,w_630/v1547232282/production/designs/3943702_0.jpg'
-          // dataInfoMovie.data.infoMovie.imageCover
+      if (infoMovie.data.status === false)
+        this.$store.dispatch(
+          'adminMovie/changeImageCover',
+          infoMovie.data.imageCover
         )
-        this.$store.commit(
-          'adminMovie/updateInfoMovieR18',
-          dataInfoMovie.data.infoMovie
+      else
+        this.$store.dispatch(
+          'adminMovie/updateInfoMovie',
+          infoMovie.data.infoMovie
         )
-        console.log(dataInfoMovie.data.infoMovie)
-      }
+      // console.log(infoMovie.data.infoMovie)
     },
 
     addTag(newTag) {
