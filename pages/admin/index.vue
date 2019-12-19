@@ -36,45 +36,35 @@
         <form-input :value="movieCode" type="text" label="Movie Code" />
         <form-input :value="releaseDate" type="date" label="Release Date" />
 
-        <div class="form-input">
-          <label for="genre">Genre</label>
-          <multiselect
-            v-model="value"
-            :options="options"
-            :multiple="true"
-            :taggable="true"
-            :close-on-select="false"
-            @tag="addTag"
-            open-direction="bottom"
-            tag-placeholder="Add this as new tag"
-            placeholder="Search or add a tag"
-            label="name"
-            track-by="code"
-            class="modify-multiselect"
-          ></multiselect>
-          {{ value }}
-          {{ this.$store.state.adminMovie.counter }}
-        </div>
+        <!-- <multi-select :options="listStudio" label="Studio" /> -->
+        <basic-select
+          :listOption="listStudio"
+          :studioSelected="studio"
+          label="Studio"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import axios from 'axios'
-import multiselect from 'vue-multiselect'
 import formInput from '../../components/admin/FormInput.vue'
+// import MultiSelect from '../../components/admin/MultiSelect.vue'
+import BasicSelect from '../../components/admin/BasicSelect.vue'
+
+const hostApi = 'http://vonvon.xyz:5000/api'
 
 export default {
   layout: 'admin',
+  head: { title: 'Admin page - NuxtJS' },
 
-  components: { multiselect, formInput },
+  components: { formInput, BasicSelect },
 
   computed: {
-    ...mapGetters('adminMovie', ['listMovie']),
-
     ...mapState('adminMovie', [
+      'listMovie',
       'imageCover',
       'movieSelected',
       'fileName',
@@ -82,41 +72,22 @@ export default {
       'movieCode',
       'actresses',
       'releaseDate',
-      'listStudio'
+      'listStudio',
+      'studio'
     ])
   },
 
   asyncData({ params }) {
-    // const { data } = await axios.get('http://vonvon.xyz:5000/api')
-    return {
-      value: [],
-      options: [
-        { name: 'Vue.js', code: 'vu' },
-        { name: 'Javascript', code: 'js' },
-        { name: 'Open Source b', code: 'osb' },
-        { name: 'Open Source c', code: 'osc' }
-      ]
-    }
+    return {}
   },
 
   async created() {
-    const listMovie = await axios.get('http://vonvon.xyz:5000/api')
     const dataInit = [
-      {
-        listStudio: await this.customAxios(
-          'http://vonvon.xyz:5000/api/studiojp'
-        )
-      },
-      {
-        listActresses: ['abc', 'xyz']
-      }
+      { listMovie: await this.customAxios() },
+      { listStudio: await this.customAxios('/studiojp') },
+      { listActresses: ['abc', 'xyz'] }
     ]
-    this.$store.dispatch('adminMovie/createListMovieInit', listMovie.data)
     this.$store.dispatch('adminMovie/addDataInit', dataInit)
-  },
-
-  head: {
-    title: 'Admin page - NuxtJS'
   },
 
   methods: {
@@ -132,41 +103,41 @@ export default {
 
       // const codeMovie = parseMovie[2].replace(/-/g, '')
       const codeMovie = parseMovie[2]
-      const infoMovie = await axios.get(
-        `http://vonvon.xyz:5000/getinfomovie/${codeMovie}`
-      )
+      const dataMovie = await this.customAxios(`/getinfomovie/${codeMovie}`)
 
-      if (infoMovie.data.status === false)
+      if (dataMovie.status === false)
         this.$store.dispatch(
           'adminMovie/changeImageCover',
-          infoMovie.data.imageCover
+          dataMovie.imageCover
         )
       else
         this.$store.dispatch(
           'adminMovie/updateInfoMovie',
-          infoMovie.data.infoMovie
+          dataMovie.movieDetail
         )
-      console.log(infoMovie.data.infoMovie)
+      this.checkExistValueDB(dataMovie.movieDetail)
     },
 
-    addTag(newTag) {
-      const tag = {
-        name: newTag,
-        code: newTag.substring(0, 2) + Math.floor(Math.random() * 10000000)
-      }
-      this.options.push(tag)
-      this.value.push(tag)
-    },
-
-    async customAxios(url) {
-      const response = await axios.get(url)
+    async customAxios(url = '') {
+      const response = await axios.get(hostApi + url)
       return response.data
+    },
+
+    async checkExistValueDB(movie) {
+      const studio = this.listStudio.find((item) => item.text === movie.studio)
+
+      if (studio === undefined) {
+        const response = await axios.post(hostApi + '/studio', {
+          studio: movie.studio
+        })
+        console.log(response)
+      }
     }
   }
 }
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style src="vue-search-select/dist/VueSearchSelect.css"></style>
 <style>
 .container-admin {
   color: #777;
