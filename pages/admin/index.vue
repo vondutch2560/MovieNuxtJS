@@ -1,6 +1,7 @@
 <template>
   <div class="container container-admin">
     <h1>Admin movie</h1>
+
     <ul class="list-movie">
       <li
         v-for="(movie, index) in listMovie"
@@ -12,6 +13,7 @@
         {{ movie }}
       </li>
     </ul>
+
     <div class="info-movie-admin">
       <div class="img-cover">
         <img
@@ -21,62 +23,19 @@
               imageCover !== '404'
           "
           :src="imageCover"
-          alt="Image Cover"
-          title="Image Cover"
         />
         <div v-if="imageCover === 'loading'" class="lds-hourglass"></div>
         <p v-if="imageCover === '404'" class="image-not-found">
           Không tìm thấy hình ảnh
         </p>
       </div>
+
       <div class="properties-movie">
-        <div class="form-input">
-          <label for="file-name">File name</label>
-          <input id="file-name" :value="fileName" type="text" name="fileName" />
-        </div>
-        <div class="form-input">
-          <label for="movie-name">Movie name</label>
-          <input
-            id="movie-name"
-            :value="movieName"
-            type="text"
-            name="movieName"
-          />
-        </div>
-        <div class="form-input">
-          <label for="movie-code">Movie Code</label>
-          <input
-            id="movie-code"
-            :value="movieCode"
-            type="text"
-            name="movieCode"
-          />
-        </div>
-        <div class="form-input">
-          <label for="release-date">Release Date</label>
-          <input id="release-date" type="date" name="releaseDate" />
-        </div>
-        <div class="form-input">
-          <label for="studio">Studio</label>
-          <input id="studio" type="text" name="studio" value="" />
-        </div>
-        <div class="form-input">
-          <label for="label-movie">Label</label>
-          <input id="label-movie" name="labelMovie" type="text" value="" />
-        </div>
-        <div class="form-input">
-          <label for="series">Series</label>
-          <input id="serires" type="text" name="series" value="" />
-        </div>
-        <div class="form-input">
-          <label for="actresses">Actresses</label>
-          <input
-            id="actresses"
-            :value="actresses"
-            type="text"
-            name="actresses"
-          />
-        </div>
+        <form-input :value="fileName" type="text" label="File name" />
+        <form-input :value="movieName" type="text" label="Movie name" />
+        <form-input :value="movieCode" type="text" label="Movie Code" />
+        <form-input :value="releaseDate" type="date" label="Release Date" />
+
         <div class="form-input">
           <label for="genre">Genre</label>
           <multiselect
@@ -102,29 +61,33 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import axios from 'axios'
 import multiselect from 'vue-multiselect'
-import { mapState, mapGetters } from 'vuex'
+import formInput from '../../components/admin/FormInput.vue'
 
 export default {
   layout: 'admin',
 
-  components: { multiselect },
+  components: { multiselect, formInput },
 
   computed: {
     ...mapGetters('adminMovie', ['listMovie']),
+
     ...mapState('adminMovie', [
       'imageCover',
       'movieSelected',
       'fileName',
       'movieName',
       'movieCode',
-      'actresses'
+      'actresses',
+      'releaseDate',
+      'listStudio'
     ])
   },
 
   asyncData({ params }) {
-    // const { data } = await axios.get('http://192.168.1.250:5000/api')
+    // const { data } = await axios.get('http://vonvon.xyz:5000/api')
     return {
       value: [],
       options: [
@@ -137,8 +100,19 @@ export default {
   },
 
   async created() {
-    const { data } = await axios.get('http://192.168.1.250:5000/api')
-    this.$store.dispatch('adminMovie/createListMovieInit', data)
+    const listMovie = await axios.get('http://vonvon.xyz:5000/api')
+    const dataInit = [
+      {
+        listStudio: await this.customAxios(
+          'http://vonvon.xyz:5000/api/studiojp'
+        )
+      },
+      {
+        listActresses: ['abc', 'xyz']
+      }
+    ]
+    this.$store.dispatch('adminMovie/createListMovieInit', listMovie.data)
+    this.$store.dispatch('adminMovie/addDataInit', dataInit)
   },
 
   head: {
@@ -159,7 +133,7 @@ export default {
       // const codeMovie = parseMovie[2].replace(/-/g, '')
       const codeMovie = parseMovie[2]
       const infoMovie = await axios.get(
-        `http://192.168.1.250:5000/getinfomovie/${codeMovie}`
+        `http://vonvon.xyz:5000/getinfomovie/${codeMovie}`
       )
 
       if (infoMovie.data.status === false)
@@ -172,7 +146,7 @@ export default {
           'adminMovie/updateInfoMovie',
           infoMovie.data.infoMovie
         )
-      // console.log(infoMovie.data.infoMovie)
+      console.log(infoMovie.data.infoMovie)
     },
 
     addTag(newTag) {
@@ -182,13 +156,18 @@ export default {
       }
       this.options.push(tag)
       this.value.push(tag)
+    },
+
+    async customAxios(url) {
+      const response = await axios.get(url)
+      return response.data
     }
   }
 }
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-<style scoped>
+<style>
 .container-admin {
   color: #777;
 }
@@ -262,12 +241,7 @@ h1 {
   vertical-align: top;
 }
 
-.info-movie-admin .properties-movie .form-input label {
-  display: inline-block;
-  width: 100px;
-}
-
-.info-movie-admin .properties-movie input[type='text'],
+/* .info-movie-admin .properties-movie input[type='text'],
 .info-movie-admin .properties-movie input[type='date'] {
   display: inline-block;
   width: 400px;
@@ -275,7 +249,7 @@ h1 {
   outline: none;
   border: 1px solid #bbb;
   padding: 6px 8px;
-}
+} */
 
 .info-movie-admin .properties-movie .modify-multiselect {
   display: inline-block;
