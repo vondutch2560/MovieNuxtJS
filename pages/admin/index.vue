@@ -38,8 +38,8 @@
 
         <!-- <multi-select :options="listStudio" label="Studio" /> -->
         <basic-select
-          :listOption="listStudio"
           :studioSelected="studio"
+          :listOption="listStudio"
           label="Studio"
         />
       </div>
@@ -87,6 +87,7 @@ export default {
       { listStudio: await this.customAxios('/studiojp') },
       { listActresses: ['abc', 'xyz'] }
     ]
+
     this.$store.dispatch('adminMovie/addDataInit', dataInit)
   },
 
@@ -124,13 +125,20 @@ export default {
     },
 
     async checkExistValueDB(movie) {
-      const studio = this.listStudio.find((item) => item.text === movie.studio)
-
+      const studio = this.listStudio.find((item) => item.name === movie.studio)
       if (studio === undefined) {
         const response = await axios.post(hostApi + '/studio', {
           studio: movie.studio
         })
-        console.log(response)
+        if (response.status === 200)
+          this.$store.dispatch('adminMovie/addListStudio', response.data)
+        this.$store.dispatch('adminMovie/updateInfoMovieByObjectName', [
+          { studio: response.data }
+        ])
+      } else {
+        this.$store.dispatch('adminMovie/updateInfoMovieByObjectName', [
+          { studio }
+        ])
       }
     }
   }

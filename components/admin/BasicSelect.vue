@@ -46,13 +46,14 @@ export default {
     },
 
     parseOptions() {
-      this.listOption.forEach((item) => {
+      const cloneList = JSON.parse(JSON.stringify(this.listOption))
+      cloneList.forEach((item) => {
         item.text = item.name
         item.value = item.id
         delete item.name
         delete item.id
       })
-      return this.listOption
+      return cloneList
     },
 
     getStudioSelected() {
