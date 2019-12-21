@@ -6,7 +6,7 @@
       <li
         v-for="(movie, index) in listMovie"
         :key="index"
-        @click="getMovie"
+        @click="crawlMovie"
         :id="`movie-${index}`"
         :class="{ active: movieSelected == movie }"
       >
@@ -35,8 +35,16 @@
         <form-input :value="movieName" type="text" label="Movie name" />
         <form-input :value="movieCode" type="text" label="Movie Code" />
         <form-input :value="releaseDate" type="date" label="Release Date" />
-        <basic-select :selected="studio" :options="listStudio" label="Studio" />
-        <!-- <multi-select :options="listStudio" label="Studio" /> -->
+        <basic-select
+          :selected="movieStudio"
+          :options="listStudio"
+          label="Studio"
+        />
+        <multi-select
+          :options="listGenre"
+          :selected="movieGenre"
+          label="Genre"
+        />
       </div>
     </div>
   </div>
@@ -44,22 +52,20 @@
 
 <script>
 import { mapState } from 'vuex'
-import axios from 'axios'
 import formInput from '../../components/admin/FormInput.vue'
-// import MultiSelect from '../../components/admin/MultiSelect.vue'
+import MultiSelect from '../../components/admin/MultiSelect.vue'
 import BasicSelect from '../../components/admin/BasicSelect.vue'
-
-const hostApi = 'http://vonvon.xyz:5000/api'
 
 export default {
   layout: 'admin',
   head: { title: 'Admin page - NuxtJS' },
 
-  components: { formInput, BasicSelect },
+  components: { formInput, BasicSelect, MultiSelect },
 
   computed: {
     ...mapState('adminMovie', [
       'listMovie',
+      'listGenre',
       'imageCover',
       'movieSelected',
       'fileName',
@@ -68,7 +74,8 @@ export default {
       'actresses',
       'releaseDate',
       'listStudio',
-      'studio'
+      'movieStudio',
+      'movieGenre'
     ])
   },
 
@@ -76,66 +83,14 @@ export default {
     return {}
   },
 
-  async created() {
-    const dataInit = [
-      { listMovie: await this.customAxios() },
-      { listStudio: await this.customAxios('/studiojp') },
-      { listActresses: ['abc', 'xyz'] }
-    ]
-
-    this.$store.dispatch('adminMovie/addDataInit', dataInit)
+  created() {
+    this.$store.dispatch('adminMovie/addDataInit')
   },
 
   methods: {
-    async getMovie(event) {
+    crawlMovie(event) {
       const fileNameMovie = event.target.innerHTML.trim()
-      const regex = /(.*)\s-\s(.*)\.[^.]+$/g
-      const parseMovie = regex.exec(fileNameMovie)
-
-      this.$store.dispatch('adminMovie/changeMovieSelected', {
-        fileNameMovie,
-        parseMovie
-      })
-
-      // const codeMovie = parseMovie[2].replace(/-/g, '')
-      const codeMovie = parseMovie[2]
-      const dataMovie = await this.customAxios(`/getinfomovie/${codeMovie}`)
-
-      if (dataMovie.status === false)
-        this.$store.dispatch(
-          'adminMovie/changeImageCover',
-          dataMovie.imageCover
-        )
-      else
-        this.$store.dispatch(
-          'adminMovie/updateInfoMovie',
-          dataMovie.movieDetail
-        )
-      console.log(dataMovie.movieDetail)
-      // this.checkExistValueDB(dataMovie.movieDetail)
-    },
-
-    async customAxios(url = '') {
-      const response = await axios.get(hostApi + url)
-      return response.data
-    },
-
-    async checkExistValueDB(movie) {
-      let findStudio = this.listStudio.find(
-        (item) => item.name === movie.studio
-      )
-      if (findStudio === undefined) {
-        const response = await axios.post(hostApi + '/studio', {
-          studio: movie.studio
-        })
-        if (response.status === 200)
-          this.$store.dispatch('adminMovie/addListStudio', response.data)
-        findStudio = response.data
-      }
-
-      this.$store.dispatch('adminMovie/updateInfoMovieByObjectName', [
-        { studio: findStudio }
-      ])
+      this.$store.dispatch('adminMovie/crawlMovie', fileNameMovie)
     }
   }
 }
@@ -216,19 +171,18 @@ h1 {
   vertical-align: top;
 }
 
-/* .info-movie-admin .properties-movie input[type='text'],
-.info-movie-admin .properties-movie input[type='date'] {
-  display: inline-block;
-  width: 400px;
-  margin-bottom: 25px;
-  outline: none;
-  border: 1px solid #bbb;
-  padding: 6px 8px;
-} */
-
 .info-movie-admin .properties-movie .modify-multiselect {
   display: inline-block;
   width: 400px;
+}
+
+.ui.fluid.dropdown {
+  display: inline-block;
+  width: 400px;
+  border: 1px solid #bbb;
+  border-radius: 0;
+  padding-left: 8px;
+  margin-bottom: 25px;
 }
 
 .lds-hourglass {

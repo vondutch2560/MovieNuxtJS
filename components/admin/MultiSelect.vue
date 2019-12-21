@@ -3,11 +3,11 @@
     <label :for="getId">{{ label }}</label>
     <multi-select
       :options="parseOptions"
-      :selected-options="items"
+      :selected-options="getSelected"
       @select="onSelect"
       :id="getId"
       :name="getName"
-      placeholder="Select Studio"
+      :placeholder="`Select ${label}`"
     >
     </multi-select>
   </div>
@@ -21,7 +21,7 @@ export default {
   props: {
     label: { type: String, default: '' },
     options: { type: Array, default: () => [] },
-    items: { type: Array, default: () => [] }
+    selected: { type: Array, default: () => [] }
   },
 
   data() {
@@ -44,26 +44,44 @@ export default {
     },
 
     parseOptions() {
-      this.options.forEach((item) => {
-        item.value = item.id
-        item.text = item.name
-        delete item.id
-        delete item.name
+      const cloneList = this.cloneObject(this.options)
+      cloneList.forEach((item) => {
+        this.renameKeyObj(item)
       })
-      return this.options
-    }
-  },
+      return cloneList
+    },
 
-  created() {
-    console.log('te', this.options)
+    getSelected() {
+      const cloneSelected = this.cloneObject(this.selected)
+      cloneSelected.forEach((item) => {
+        this.renameKeyObj(item)
+      })
+      return cloneSelected
+    }
   },
 
   methods: {
     onSelect(items) {
-      this.items = items
+      // console.log(items)
+    },
+
+    cloneObject(obj) {
+      return JSON.parse(JSON.stringify(obj))
+    },
+
+    renameKeyObj(obj) {
+      obj.text = obj.name
+      obj.value = obj.id
+      delete obj.name
+      delete obj.id
+      return obj
     }
   }
 }
 </script>
 
-<style></style>
+<style scope>
+.ui.multiple.search.dropdown > .text {
+  padding-left: 0 !important;
+}
+</style>

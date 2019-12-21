@@ -7,7 +7,7 @@
       @select="onSelect"
       :id="getId"
       :name="getName"
-      placeholder="Select Studio"
+      :placeholder="`Select ${label}`"
     >
     </basic-select>
   </div>
@@ -80,12 +80,4 @@ export default {
   }
 }
 </script>
-<style scoped>
-.ui.fluid.dropdown {
-  display: inline-block;
-  width: 400px;
-  border: 1px solid #bbb;
-  border-radius: 0;
-  padding-left: 8px;
-}
-</style>
+<style scoped></style>

@@ -34,6 +34,8 @@ export default {
 .form-input label {
   display: inline-block;
   width: 100px;
+  vertical-align: top;
+  margin-top: 6px;
 }
 
 .form-input input[type='text'],
