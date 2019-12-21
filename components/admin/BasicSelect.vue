@@ -20,8 +20,8 @@ export default {
   components: { BasicSelect },
   props: {
     label: { type: String, default: '' },
-    listOption: { type: Array, default: () => [] },
-    studioSelected: { type: Object, default: () => [] }
+    options: { type: Array, default: () => [] },
+    selected: { type: Object, default: () => [] }
   },
 
   data() {
@@ -46,18 +46,16 @@ export default {
     },
 
     parseOptions() {
-      const cloneList = JSON.parse(JSON.stringify(this.listOption))
+      const cloneList = this.cloneObject(this.options)
       cloneList.forEach((item) => {
-        item.text = item.name
-        item.value = item.id
-        delete item.name
-        delete item.id
+        this.renameKeyObj(item)
       })
       return cloneList
     },
 
     getStudioSelected() {
-      return this.studioSelected
+      const cloneSelected = this.cloneObject(this.selected)
+      return this.renameKeyObj(cloneSelected)
     }
   },
 
@@ -66,6 +64,18 @@ export default {
   methods: {
     onSelect(item) {
       this.item = item
+    },
+
+    cloneObject(obj) {
+      return JSON.parse(JSON.stringify(obj))
+    },
+
+    renameKeyObj(obj) {
+      obj.text = obj.name
+      obj.value = obj.id
+      delete obj.name
+      delete obj.id
+      return obj
     }
   }
 }

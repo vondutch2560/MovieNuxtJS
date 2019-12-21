@@ -35,13 +35,8 @@
         <form-input :value="movieName" type="text" label="Movie name" />
         <form-input :value="movieCode" type="text" label="Movie Code" />
         <form-input :value="releaseDate" type="date" label="Release Date" />
-
+        <basic-select :selected="studio" :options="listStudio" label="Studio" />
         <!-- <multi-select :options="listStudio" label="Studio" /> -->
-        <basic-select
-          :studioSelected="studio"
-          :listOption="listStudio"
-          label="Studio"
-        />
       </div>
     </div>
   </div>
@@ -116,7 +111,8 @@ export default {
           'adminMovie/updateInfoMovie',
           dataMovie.movieDetail
         )
-      this.checkExistValueDB(dataMovie.movieDetail)
+      console.log(dataMovie.movieDetail)
+      // this.checkExistValueDB(dataMovie.movieDetail)
     },
 
     async customAxios(url = '') {
@@ -125,21 +121,21 @@ export default {
     },
 
     async checkExistValueDB(movie) {
-      const studio = this.listStudio.find((item) => item.name === movie.studio)
-      if (studio === undefined) {
+      let findStudio = this.listStudio.find(
+        (item) => item.name === movie.studio
+      )
+      if (findStudio === undefined) {
         const response = await axios.post(hostApi + '/studio', {
           studio: movie.studio
         })
         if (response.status === 200)
           this.$store.dispatch('adminMovie/addListStudio', response.data)
-        this.$store.dispatch('adminMovie/updateInfoMovieByObjectName', [
-          { studio: response.data }
-        ])
-      } else {
-        this.$store.dispatch('adminMovie/updateInfoMovieByObjectName', [
-          { studio }
-        ])
+        findStudio = response.data
       }
+
+      this.$store.dispatch('adminMovie/updateInfoMovieByObjectName', [
+        { studio: findStudio }
+      ])
     }
   }
 }
