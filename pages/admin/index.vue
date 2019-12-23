@@ -62,6 +62,14 @@ export default {
 
   components: { formInput, BasicSelect, MultiSelect },
 
+  filters: {
+    decodeEntities(str) {
+      const text = document.createElement('textarea')
+      text.innerHTML = str
+      return text.value
+    }
+  },
+
   computed: {
     ...mapState('adminMovie', [
       'listMovie',
