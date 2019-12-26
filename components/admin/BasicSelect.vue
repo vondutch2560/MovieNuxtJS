@@ -71,7 +71,7 @@ export default {
     },
 
     renameKeyObj(obj) {
-      obj.text = obj.name
+      obj.text = this.$options.filters.decodeEntities(obj.name)
       obj.value = obj.id
       delete obj.name
       delete obj.id

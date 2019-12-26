@@ -25,6 +25,7 @@ export default {
    */
   css: [
     '@/assets/css/main.css',
+    '@/assets/css/admin-movie.css',
     '@/assets/css/responsive-1920.css',
     '@/assets/css/responsive-1200.css',
     '@/assets/css/responsive-992.css',
@@ -33,7 +34,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~plugins/MyFilter.js'],
   /*
    ** Nuxt.js dev-modules
    */
