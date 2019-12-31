@@ -1,0 +1,11 @@
+{
+  "prettier.trailingComma": "es5",
+  "editor.formatOnSave": true,
+  "eslint.validate": ["vue", "html", "javascript"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
