@@ -1,22 +1,38 @@
 .container-admin {
   color: #777;
 }
+.container-admin .footer {
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background-color: #eee;
+  border-top: 1px solid #bbb;
+  line-height: 20px;
+}
 
 h1 {
-  padding: 20px;
+  padding-left: 10px;
   background-color: #aaa;
   color: #555;
   user-select: none;
+  height: 44px;
+  line-height: 44px;
+  font-size: 28px;
 }
 
 .list-movie {
   display: inline-block;
-  width: 310px;
+  width: 300px;
   border-right: 1px solid #999;
   position: fixed;
-  top: 77px;
+  top: 44px;
   left: 0;
-  bottom: 0;
+  bottom: 22px;
   overflow: auto;
   padding: 10px 30px 10px 20px;
 }
@@ -26,6 +42,7 @@ h1 {
   user-select: none;
   cursor: pointer;
   padding: 2px 0;
+  font-size: 14px;
 }
 .list-movie li.active {
   background-color: #aaa;
@@ -33,14 +50,18 @@ h1 {
 
 .info-movie-admin {
   position: fixed;
-  top: 100px;
-  left: 330px;
-  right: 20px;
+  top: 44px;
+  left: 300px;
+  right: 0;
   bottom: 20px;
 }
 
+.info-movie-admin .inner-info-movie {
+  margin: 20px;
+}
+
 .info-movie-admin .img-cover {
-  width: 650px;
+  width: calc(100% - 750px);
   min-height: 420px;
   border: 1px solid #bbb;
   display: inline-block;
@@ -66,7 +87,7 @@ h1 {
 
 .info-movie-admin .properties-movie {
   display: inline-block;
-  width: 800px;
+  width: 600px;
   margin-left: 40px;
   vertical-align: top;
 }

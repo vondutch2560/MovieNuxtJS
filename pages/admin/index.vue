@@ -15,42 +15,46 @@
     </ul>
 
     <div class="info-movie-admin">
-      <div class="img-cover">
-        <img
-          v-if="
-            imageCover !== '' &&
-              imageCover !== 'loading' &&
-              imageCover !== '404'
-          "
-          :src="imageCover"
-        />
-        <div v-if="imageCover === 'loading'" class="lds-hourglass"></div>
-        <p v-if="imageCover === '404'" class="image-not-found">
-          Không tìm thấy hình ảnh
-        </p>
-      </div>
+      <div class="inner-info-movie">
+        <div class="img-cover">
+          <img
+            v-if="
+              imageCover !== '' &&
+                imageCover !== 'loading' &&
+                imageCover !== '404'
+            "
+            :src="imageCover"
+          />
+          <div v-if="imageCover === 'loading'" class="lds-hourglass"></div>
+          <p v-if="imageCover === '404'" class="image-not-found">
+            Không tìm thấy hình ảnh
+          </p>
+        </div>
 
-      <div class="properties-movie">
-        <form-input :value="fileName" type="text" label="File name" />
-        <form-input
-          :value="movieName | decodeEntities"
-          type="text"
-          label="Movie name"
-        />
-        <form-input :value="movieCode" type="text" label="Movie Code" />
-        <form-input :value="releaseDate" type="date" label="Release Date" />
-        <basic-select
-          :selected="movieStudio"
-          :options="listStudio"
-          label="Studio"
-        />
-        <multi-select
-          :options="listGenre"
-          :selected="movieGenre"
-          label="Genre"
-        />
+        <div class="properties-movie">
+          <form-input :value="fileName" type="text" label="File name" />
+          <form-input
+            :value="movieName | decodeEntities"
+            type="text"
+            label="Movie name"
+          />
+          <form-input :value="movieCode" type="text" label="Movie Code" />
+          <form-input :value="releaseDate" type="date" label="Release Date" />
+          <basic-select
+            :selected="movieStudio"
+            :options="listStudio"
+            label="Studio"
+          />
+          <multi-select
+            :options="listGenre"
+            :selected="movieGenre"
+            label="Genre"
+          />
+        </div>
       </div>
     </div>
+
+    <div class="footer">Copyright 2020</div>
   </div>
 </template>
 
