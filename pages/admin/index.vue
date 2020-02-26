@@ -65,8 +65,8 @@ import MultiSelect from '../../components/admin/MultiSelect.vue'
 import BasicSelect from '../../components/admin/BasicSelect.vue'
 
 export default {
-  layout: 'admin',
   head: { title: 'Admin page - NuxtJS' },
+  layout: 'admin',
 
   components: { formInput, BasicSelect, MultiSelect },
 

@@ -18,9 +18,4 @@ export default {
 }
 </script>
 
-<style>
-._layout_movie {
-  position: relative;
-  padding-bottom: 40px;
-}
-</style>
+<style></style>

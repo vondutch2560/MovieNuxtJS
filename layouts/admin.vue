@@ -11,8 +11,5 @@ export default {
 </script>
 
 <style>
-._layout_admin {
-  position: relative;
-  background-color: #fff;
-}
+@import '../assets/css/admin-movie.css';
 </style>

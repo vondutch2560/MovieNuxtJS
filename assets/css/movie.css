@@ -1,0 +1,43 @@
+._layout_movie {
+}
+
+.header.container {
+  background: #162530;
+}
+
+.header h2 a {
+  font-size: 40px;
+  padding: 8px 0;
+  display: inline-block;
+}
+
+.main.container {
+  background-color: #1a2b38;
+  padding: 20px 0;
+}
+
+.main .row {
+  background-color: #162530;
+  min-height: 400px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-gap: 40px;
+}
+
+.main .item-movie {
+  position: relative;
+}
+
+.main .item-movie .cover {
+  height: 0;
+  padding-bottom: 144%;
+  background-position: center;
+  background-size: cover;
+}
+
+.item-movie h4 {
+  font-family: 'Roboto Condensed', sans-serif;
+  text-align: center;
+  padding-top: 10px;
+  line-height: 1.4;
+}
