@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
+    "jsonp": "^0.2.1",
     "nuxt": "^2.0.0",
     "vue-search-select": "^2.9.3"
   },

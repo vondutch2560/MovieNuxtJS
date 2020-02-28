@@ -1,4 +1,5 @@
-._layout_movie {
+html {
+  background-color: #1a2b38;
 }
 
 .header.container {
@@ -12,16 +13,15 @@
 }
 
 .main.container {
-  background-color: #1a2b38;
   padding: 20px 0;
 }
 
-.main .row {
+.main .row .list--movie {
   background-color: #162530;
-  min-height: 400px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   grid-gap: 40px;
+  padding: 25px;
 }
 
 .main .item-movie {
@@ -40,4 +40,24 @@
   text-align: center;
   padding-top: 10px;
   line-height: 1.4;
+}
+
+.main .vid {
+  margin-bottom: 20px;
+}
+
+.main .my-video {
+  width: 85%;
+  height: 0;
+  padding-bottom: 36%;
+  margin: auto;
+  position: relative;
+}
+
+.main .my-video video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 400px;
 }
